@@ -1,0 +1,208 @@
+<html>
+  <head>
+    <style>
+      * {
+        font-family: "Arial";
+        font-size: 48;
+      }
+      table, tr, td {
+        /* border: 1px solid black; */
+      }
+      td {
+        width: 25vw;
+        height: auto;
+      }
+      .card {
+        box-shadow: 1px 1px 2px #333;
+        border: 1px solid #333;
+        padding: 20px;
+        margin-bottom: 10px;
+      }
+      .danger {
+        color: darkred;
+      }
+      .link {
+        cursor: pointer;
+      }
+      .log {
+        max-height: 100px;
+        font-size: 20px;
+        overflow-y: scroll;
+      }
+    </style>
+
+    <script src="res/jquery-1.11.1.min.js"></script>
+
+
+    <script>
+      apiURL = "/api"
+      function apiGET(rurl, callback, errorCallback, callBackObject) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.timeout = 10000;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && RegExp('2.*').test(xmlHttp.status)) {
+
+              if (callBackObject != null) {
+                callback(xmlHttp.responseText, callBackObject);
+              } else {
+                callback(xmlHttp.responseText);
+              }
+
+            } else if (xmlHttp.readyState == 4) {
+
+              console.log("ERROR:: Txt:" + xmlHttp.responseText + " Code:" + xmlHttp.status)
+              if (errorCallback != null) {
+                errorCallback(xmlHttp.responseText);
+              }
+
+            }
+          }
+          // console.log("GET: " + apiURL + rurl)
+          xmlHttp.open("GET", apiURL + rurl, true); // true for asynchronous
+          xmlHttp.send(null);
+      }
+
+      function updateNowPlaying() {
+        apiGET("/nowplaying", updateNowPlaying_callback);
+      }
+      function updateNowPlaying_callback(data) {
+        $('#nowplayingtxt').html(data);
+      }
+
+      function updateLog() {
+        apiGET("/log", updateLog_callback);
+      }
+      function updateLog_callback(data) {
+        $('#logtxt').html(data);
+      }
+
+      function updateSchedule() {
+        apiGET("/schedule", updateSchedule_callback);
+      }
+      function updateSchedule_callback(data) {
+        $('#scheduletxt').html(data);
+      }
+
+      function reloadScheduleFromDisk() {
+        apiGET("/schedule/reload", reloadScheduleFromDisk_callback);
+      }
+      function reloadScheduleFromDisk_callback(data) {
+        flashControl("reloadScheduleCard");
+        updateSchedule();
+      }
+
+      function playTest() {
+        apiGET("/play/startup.wav", playTest_callback);
+      }
+      function playTest_callback(data) {
+        flashControl("playtestcard");
+        updateNowPlaying();
+      }
+
+      function r_play() {
+        apiGET("/play", r_play_callback);
+      }
+      function r_play_callback(data) {
+        flashControl("bPlay");
+        updateNowPlaying()
+      }
+
+      function r_stop() {
+        apiGET("/stop", r_stop_callback);
+      }
+      function r_stop_callback(data) {
+        flashControl("bStop");
+        updateNowPlaying()
+      }
+
+      function updateAll() {
+        updateNowPlaying()
+        updateLog()
+      }
+
+      function flashControl(control) {
+        control = $('#' + control);
+        control.css('background-color', 'green');
+        setTimeout(function(){ control.css('background-color', 'white') }, 300);
+      }
+
+      setInterval(updateAll, 5000);
+      updateSchedule();
+    </script>
+
+
+  </head>
+  <body onload="updateAll()">
+
+
+      <div class="card">
+        <center>
+          <h1> Pi Controller </h1>
+        </center>
+      </div>
+
+      <div class="card">
+        <center>
+          <h3> Now Playing: <i id="nowplayingtxt"><span class="danger">ERROR!</span></i> </h3>
+        </center>
+      </div>
+
+      <div class="card">
+        <table style="width:100%;">
+          <tr>
+            <td id="bPlay" onload=""class="link" onclick="r_play()">
+              <!-- Play -->
+              <svg style="width:100%;height:100%" viewBox="0 0 24 24">
+                  <path fill="#000000" d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+              </svg>
+            </td>
+            <td> &nbsp </td>
+            <td id="bStop" class="link" onclick="r_stop()">
+              <!-- Stop -->
+              <svg style="width:100%;height:100%" viewBox="0 0 24 24">
+                <path fill="#000000" d="M18,18H6V6H18V18Z" />
+              </svg>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <center>
+          <strong> Schedule: </strong>
+          <pre id="scheduletxt" style="font-size:32px;">
+            <span class="danger"> Failed to load schedule </span>
+          </pre>
+        </center>
+      </div>
+
+      <div class="card">
+        <center>
+          <strong> Log: </strong>
+          <pre class="log" id="logtxt">
+            <span class="danger"> Failed to load log </span>
+          </pre>
+        </center>
+      </div>
+
+      <div class="card link" onclick="reloadScheduleFromDisk()" id="reloadScheduleCard">
+        <center>
+          <h3> Reload Schedule </h3>
+        </center>
+      </div>
+
+      <div id="playtestcard" class="card link" onclick="playTest()">
+        <center>
+          <h3> Play Test </h3>
+        </center>
+      </div>
+
+      <div class="card danger">
+        <center>
+          <h3> Shutdown Pi </h3>
+        </center>
+      </div>
+
+
+  </body>
+</html>
