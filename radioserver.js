@@ -24,7 +24,7 @@ function dateRightNow() {
 }
 function log(text) {
   if (debug) {
-    console.log(dateRightNow().toString() + " " + text)
+    console.log(dateRightNow().toString() + " " + text.toString().replace(/<[^>]*>/, ''));
   }
   logcontent = logcontent + "\n" + dateRightNow().toString() + " " + text;
 }
@@ -92,7 +92,7 @@ function scheduleRadioJobs() {
     //Check that it's 6 chunks long
     if (scheduleLine.length != 6) {
 
-      log("ERROR: Schedule line " + linenum + " contains invalid config. Not scheduling.");
+      log("<span class='ohno'>ERROR: Schedule line " + linenum + " contains invalid config. Not scheduling. </span>");
 
     } else {
 
@@ -108,7 +108,7 @@ function scheduleRadioJobs() {
 
       } else {
 
-        log("ERROR: Schedule line " + linenum + " referenced audio file '" + newAudioFile + "'. This is not in the folder /audio. Not scheduling.");
+        log("<span class='ohno'>ERROR: Schedule line " + linenum + " referenced audio file '" + newAudioFile + "'. This is not in the folder /audio. Not scheduling. </span>");
 
       }
 

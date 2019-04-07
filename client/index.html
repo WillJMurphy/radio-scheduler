@@ -12,6 +12,9 @@
         width: 25vw;
         height: auto;
       }
+      i {
+        color: #44CCFF;
+      }
       .card {
         box-shadow: 1px 1px 2px #333;
         border: 1px solid #333;
@@ -25,9 +28,13 @@
         cursor: pointer;
       }
       .log {
-        max-height: 100px;
+        max-height: 200px;
         font-size: 20px;
         overflow-y: scroll;
+      }
+      .ohno {
+        font-size: 20px;
+        color: darkred;
       }
     </style>
 
@@ -137,13 +144,15 @@
 
       <div class="card">
         <center>
-          <h1> Pi Controller </h1>
+          <h1>
+            Radio Scheduler
+          </h1>
         </center>
       </div>
 
       <div class="card">
         <center>
-          <h3> Now Playing: <i id="nowplayingtxt"><span class="danger">ERROR!</span></i> </h3>
+          <h3> Now Playing: <br> <i id="nowplayingtxt"><span class="danger">ERROR!</span></i> </h3>
         </center>
       </div>
 
@@ -153,14 +162,14 @@
             <td id="bPlay" onload=""class="link" onclick="r_play()">
               <!-- Play -->
               <svg style="width:100%;height:100%" viewBox="0 0 24 24">
-                  <path fill="#000000" d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                  <path fill="#55FF55" d="M8,5.14V19.14L19,12.14L8,5.14Z" />
               </svg>
             </td>
             <td> &nbsp </td>
             <td id="bStop" class="link" onclick="r_stop()">
               <!-- Stop -->
               <svg style="width:100%;height:100%" viewBox="0 0 24 24">
-                <path fill="#000000" d="M18,18H6V6H18V18Z" />
+                <path fill="#FF5555" d="M18,18H6V6H18V18Z" />
               </svg>
             </td>
           </tr>
@@ -179,10 +188,10 @@
       <div class="card">
         <center>
           <strong> Log: </strong>
+        </center>
           <pre class="log" id="logtxt">
             <span class="danger"> Failed to load log </span>
           </pre>
-        </center>
       </div>
 
       <div class="card link" onclick="reloadScheduleFromDisk()" id="reloadScheduleCard">
